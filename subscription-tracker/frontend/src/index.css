@@ -1,39 +1,41 @@
-/* The Subscription Tracker - Financial Ledger & Receipt Theme System */
+/* The Subscription Tracker - High Contrast Light Ledger Theme */
 
 :root {
   /* Typography */
   --font-display: 'IBM Plex Mono', monospace;
   --font-body: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Color Palette (Financial Slate & Ledger Paper) */
-  --bg-canvas: #0b0e14;
-  --bg-ledger: #121824;
-  --bg-ledger-alt: #171f2e;
-  --bg-input: #0a0e17;
+  /* Pure White Background Palette */
+  --bg-canvas: #ffffff;
+  --bg-ledger: #ffffff;
+  --bg-ledger-alt: #f8fafc;
+  --bg-input: #f1f5f9;
   
-  --border-rule: #232d3f;
-  --border-rule-strong: #334155;
+  --border-rule: #e2e8f0;
+  --border-rule-strong: #cbd5e1;
 
-  /* Ink Typographic Palette */
-  --ink-primary: #f1f5f9;
-  --ink-secondary: #94a3b8;
+  /* Ink Typographic Palette (Deep Charcoal Black for White Background) */
+  --ink-primary: #0f172a;
+  --ink-secondary: #475569;
   --ink-muted: #64748b;
 
-  /* Reserved Accents */
-  --accent-hero: #6366f1;
-  --accent-hero-hover: #4f46e5;
+  /* Accents */
+  --accent-hero: #4f46e5;
+  --accent-hero-hover: #3730a3;
   
-  /* EYE-CATCHING ALERT COLOR - Reserved ONLY for Renewing Soon & Urgent Metrics */
-  --accent-urgent: #ff5500;
-  --accent-urgent-bg: rgba(255, 85, 0, 0.16);
-  --accent-urgent-border: rgba(255, 85, 0, 0.4);
+  /* HIGH-CONTRAST "RENEWING SOON" ALERT ACCENT FOR WHITE BACKGROUND */
+  --accent-urgent: #dc2626;
+  --accent-urgent-bg: #fef2f2;
+  --accent-urgent-border: #fca5a5;
 
   /* Status Colors */
-  --status-active-bg: rgba(16, 185, 129, 0.14);
-  --status-active-ink: #10b981;
-  
-  --status-paused-bg: rgba(100, 116, 139, 0.18);
-  --status-paused-ink: #94a3b8;
+  --status-active-bg: #ecfdf5;
+  --status-active-ink: #047857;
+  --status-active-border: #a7f3d0;
+
+  --status-paused-bg: #f1f5f9;
+  --status-paused-ink: #64748b;
+  --status-paused-border: #cbd5e1;
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -53,9 +55,10 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  /* Light Ledger Grid Line Pattern */
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -88,7 +91,7 @@ textarea:focus-visible {
   border: 1px solid var(--border-rule-strong);
   border-radius: var(--radius-lg);
   margin-bottom: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
 }
 
 .nav-brand {
@@ -100,7 +103,7 @@ textarea:focus-visible {
 .brand-icon {
   width: 42px;
   height: 42px;
-  background: var(--bg-canvas);
+  background: var(--bg-input);
   border: 1px solid var(--border-rule-strong);
   border-radius: var(--radius-md);
   display: flex;
@@ -146,7 +149,7 @@ textarea:focus-visible {
   background: var(--accent-hero);
   color: #ffffff;
   border-color: var(--accent-hero-hover);
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
 }
 
 .btn-primary:hover {
@@ -157,12 +160,12 @@ textarea:focus-visible {
 .btn-secondary {
   background: var(--bg-canvas);
   color: var(--ink-primary);
-  border-color: var(--border-rule);
+  border-color: var(--border-rule-strong);
 }
 
 .btn-secondary:hover {
   background: var(--bg-ledger-alt);
-  border-color: var(--border-rule-strong);
+  border-color: var(--ink-secondary);
 }
 
 .btn-sm {
@@ -186,7 +189,7 @@ textarea:focus-visible {
   padding: 28px 32px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
 }
 
 .hero-top-bar {
@@ -211,12 +214,12 @@ textarea:focus-visible {
   color: var(--ink-secondary);
 }
 
-/* STAMPED DISPLAY CURRENCY SWITCHER BAR */
+/* STAMPED DISPLAY CURRENCY SWITCHER BAR FOR WHITE BG */
 .currency-switcher-bar {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--bg-canvas);
+  background: var(--bg-input);
   padding: 4px 8px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-rule-strong);
@@ -251,14 +254,13 @@ textarea:focus-visible {
 
 .currency-pill-btn:hover {
   color: var(--ink-primary);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--border-rule);
 }
 
 .currency-pill-btn.active {
   background: var(--accent-hero);
   color: #ffffff;
   border-color: var(--accent-hero-hover);
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
 }
 
 .hero-main-display {
@@ -285,7 +287,7 @@ textarea:focus-visible {
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.04em;
-  color: #ffffff;
+  color: var(--ink-primary);
 }
 
 .hero-period {
@@ -317,6 +319,7 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
 .card-label {
@@ -350,7 +353,7 @@ textarea:focus-visible {
   align-items: center;
 }
 
-/* BOLD EYE-CATCHING "RENEWING SOON" BADGE */
+/* HIGH-CONTRAST "RENEWING SOON" BADGE FOR WHITE BACKGROUND */
 .renewing-soon-badge {
   background: var(--accent-urgent-bg);
   color: var(--accent-urgent);
@@ -364,7 +367,7 @@ textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 0 12px rgba(255, 85, 0, 0.35);
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
 }
 
 .table-alert-badge {
@@ -381,9 +384,9 @@ textarea:focus-visible {
 }
 
 @keyframes pulse-ring {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 85, 0, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 85, 0, 0); }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
 }
 
 .urgent-glow {
@@ -391,9 +394,9 @@ textarea:focus-visible {
 }
 
 .standard-renewal-badge {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-input);
   color: var(--ink-secondary);
-  border: 1px solid var(--border-rule);
+  border: 1px solid var(--border-rule-strong);
   padding: 3px 8px;
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
@@ -416,7 +419,7 @@ textarea:focus-visible {
   border: 1px solid var(--border-rule-strong);
   border-radius: var(--radius-lg);
   padding: 24px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
 }
 
 .ledger-toolbar {
@@ -462,10 +465,10 @@ textarea:focus-visible {
 
 .ledger-status-pills {
   display: flex;
-  background: var(--bg-canvas);
+  background: var(--bg-input);
   padding: 3px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-rule);
+  border: 1px solid var(--border-rule-strong);
 }
 
 .ledger-tab {
@@ -485,6 +488,7 @@ textarea:focus-visible {
   background: var(--bg-ledger);
   color: var(--ink-primary);
   border: 1px solid var(--border-rule-strong);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Category Filter Chips */
@@ -515,8 +519,8 @@ textarea:focus-visible {
 }
 
 .chip-btn {
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-rule);
+  background: var(--bg-input);
+  border: 1px solid var(--border-rule-strong);
   color: var(--ink-secondary);
   padding: 4px 12px;
   border-radius: var(--radius-sm);
@@ -528,14 +532,14 @@ textarea:focus-visible {
 }
 
 .chip-btn:hover {
-  border-color: var(--border-rule-strong);
+  border-color: var(--ink-secondary);
   color: var(--ink-primary);
 }
 
 .chip-btn.chip-active {
-  background: var(--bg-ledger-alt);
-  border-color: var(--accent-hero);
-  color: var(--ink-primary);
+  background: var(--accent-hero);
+  border-color: var(--accent-hero-hover);
+  color: #ffffff;
   font-weight: 700;
 }
 
@@ -553,7 +557,7 @@ textarea:focus-visible {
 }
 
 .ledger-table th {
-  background: var(--bg-canvas);
+  background: var(--bg-input);
   padding: 12px 16px;
   font-size: 0.72rem;
   font-weight: 700;
@@ -577,7 +581,7 @@ textarea:focus-visible {
   margin-right: 4px;
 }
 
-/* ALTERNATING LEDGER ROW TREATMENT */
+/* ALTERNATING WHITE LEDGER ROW TREATMENT */
 .ledger-row {
   border-bottom: 1px solid var(--border-rule);
   transition: background-color 0.15s;
@@ -587,17 +591,17 @@ textarea:focus-visible {
 .odd-row { background-color: var(--bg-ledger-alt); }
 
 .ledger-row:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: #f1f5f9;
 }
 
-/* DISTINCT PAUSED VS ACTIVE ROW STYLING */
+/* DISTINCT PAUSED VS ACTIVE ROW STYLING FOR LIGHT MODE */
 .row-state-paused {
   background-image: repeating-linear-gradient(
     -45deg,
     transparent,
     transparent 10px,
-    rgba(0, 0, 0, 0.15) 10px,
-    rgba(0, 0, 0, 0.15) 20px
+    rgba(148, 163, 184, 0.08) 10px,
+    rgba(148, 163, 184, 0.08) 20px
   );
 }
 
@@ -638,8 +642,8 @@ textarea:focus-visible {
 
 .category-tag {
   font-size: 0.7rem;
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-rule);
+  background: var(--bg-input);
+  border: 1px solid var(--border-rule-strong);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
   color: var(--ink-secondary);
@@ -686,13 +690,13 @@ textarea:focus-visible {
 .rate-active {
   background: var(--status-active-bg);
   color: var(--status-active-ink);
-  border-color: rgba(16, 185, 129, 0.3);
+  border-color: var(--status-active-border);
 }
 
 .rate-paused {
   background: var(--status-paused-bg);
   color: var(--status-paused-ink);
-  border-color: var(--border-rule);
+  border-color: var(--status-paused-border);
 }
 
 .rate-unit {
@@ -715,7 +719,7 @@ textarea:focus-visible {
   color: var(--ink-muted);
 }
 
-/* TACTILE ACTIVE / PAUSED TOGGLE SWITCH */
+/* TACTILE ACTIVE / PAUSED TOGGLE SWITCH FOR WHITE BG */
 .tactile-toggle-btn {
   display: inline-flex;
   align-items: center;
@@ -731,12 +735,12 @@ textarea:focus-visible {
 
 .tactile-toggle-btn.state-active {
   border-color: var(--status-active-ink);
-  background: rgba(16, 185, 129, 0.08);
+  background: var(--status-active-bg);
 }
 
 .tactile-toggle-btn.state-paused {
-  border-color: var(--border-rule);
-  background: var(--bg-canvas);
+  border-color: var(--border-rule-strong);
+  background: var(--bg-input);
 }
 
 .toggle-track {
@@ -766,6 +770,7 @@ textarea:focus-visible {
   justify-content: center;
   color: #000000;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .state-active .toggle-knob {
@@ -792,7 +797,7 @@ textarea:focus-visible {
   width: 30px;
   height: 30px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-rule);
+  border: 1px solid var(--border-rule-strong);
   background: var(--bg-canvas);
   color: var(--ink-secondary);
   display: flex;
@@ -804,19 +809,21 @@ textarea:focus-visible {
 
 .edit-action:hover {
   border-color: var(--accent-hero);
-  color: var(--ink-primary);
+  color: var(--accent-hero);
+  background: var(--bg-input);
 }
 
 .delete-action:hover {
   border-color: var(--accent-urgent);
   color: var(--accent-urgent);
+  background: var(--accent-urgent-bg);
 }
 
 /* Modals */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -832,7 +839,7 @@ textarea:focus-visible {
   width: 100%;
   max-width: 540px;
   padding: 28px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
 }
 
 .modal-header {
@@ -902,7 +909,7 @@ textarea:focus-visible {
 
 .burn-preview-box {
   background: var(--status-active-bg);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid var(--status-active-border);
   padding: 12px 16px;
   border-radius: var(--radius-md);
   display: flex;
