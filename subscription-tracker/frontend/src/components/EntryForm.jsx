@@ -46,7 +46,7 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
     if (initialData) {
       setFormData({
         name: initialData.name || '',
-        cost: initialData.cost || '',
+        cost: initialData.cost !== undefined ? String(initialData.cost) : '',
         currency: initialData.currency || 'USD',
         frequency: initialData.frequency || 'monthly',
         category: initialData.category || 'Software',
@@ -90,11 +90,11 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
     setError(null);
 
     if (!formData.name.trim()) {
-      setError('Please provide a subscription name');
+      setError('Please fill out the Subscription Name.');
       return;
     }
-    if (formData.cost === '' || isNaN(formData.cost) || parseFloat(formData.cost) < 0) {
-      setError('Please provide a valid non-negative cost amount');
+    if (formData.cost === '' || isNaN(formData.cost) || parseFloat(formData.cost) <= 0) {
+      setError('Please fill out the Cost Amount with a positive number.');
       return;
     }
 
@@ -102,11 +102,12 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
       setSubmitting(true);
       await onSubmit({
         ...formData,
+        name: formData.name.trim(),
         cost: parseFloat(formData.cost)
       });
       onClose();
     } catch (err) {
-      setError(err.message || 'Failed to save subscription');
+      setError(err.message || 'Failed to save subscription entry');
     } finally {
       setSubmitting(false);
     }
@@ -126,7 +127,7 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
               {initialData ? 'Update recurring terms and original billing currency' : 'Register a new service to audit burn rate'}
             </p>
           </div>
-          <button className="ledger-action-btn" onClick={onClose} aria-label="Close modal">
+          <button type="button" className="ledger-action-btn" onClick={onClose} aria-label="Close modal">
             <X size={16} />
           </button>
         </div>
@@ -138,45 +139,47 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="form-grid">
-          {/* Name */}
+        <form onSubmit={handleSubmit} noValidate className="form-grid">
+          {/* Subscription Name */}
           <div className="form-group full-width">
-            <label className="form-label">Subscription / Service Name</label>
+            <label className="form-label">Subscription / Service Name *</label>
             <input
               type="text"
               className="form-input"
               placeholder="e.g. Netflix, AWS, GitHub Copilot"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
             />
           </div>
 
-          {/* Cost & Currency Selector */}
+          {/* Currency Selection */}
           <div className="form-group">
-            <label className="form-label">Cost & Currency</label>
-            <div className="cost-currency-row">
-              <select
-                className="form-select currency-selector-input"
-                value={formData.currency}
-                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-              >
-                {CURRENCIES.map((c) => (
-                  <option key={c.code} value={c.code}>{c.label}</option>
-                ))}
-              </select>
-              <div className="cost-input-wrapper">
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  className="form-input font-mono"
-                  placeholder="0.00"
-                  value={formData.cost}
-                  onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
-                  required
-                />
-              </div>
+            <label className="form-label">Billed Currency</label>
+            <select
+              className="form-select font-mono"
+              value={formData.currency}
+              onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Billed Cost Amount */}
+          <div className="form-group">
+            <label className="form-label">Billed Cost Amount *</label>
+            <div className="cost-input-container">
+              <span className="currency-prefix-badge font-mono">{activeCurrencySymbol}</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                className="form-input cost-number-input font-mono"
+                placeholder="0.00"
+                value={formData.cost}
+                onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+              />
             </div>
           </div>
 
@@ -209,14 +212,13 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
           </div>
 
           {/* Start Date */}
-          <div className="form-group">
+          <div className="form-group full-width">
             <label className="form-label">Start Date</label>
             <input
               type="date"
               className="form-input font-mono"
               value={formData.startDate}
               onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-              required
             />
           </div>
 
@@ -228,8 +230,8 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
                 {activeCurrencySymbol}{getMonthlyPreview()} / mo
               </div>
             </div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>
-              {formData.currency} entered
+            <span style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>
+              Original {formData.currency} term
             </span>
           </div>
 

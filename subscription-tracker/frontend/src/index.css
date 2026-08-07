@@ -55,7 +55,6 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  /* Light Ledger Grid Line Pattern */
   background-image: 
     linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
@@ -214,7 +213,7 @@ textarea:focus-visible {
   color: var(--ink-secondary);
 }
 
-/* STAMPED DISPLAY CURRENCY SWITCHER BAR FOR WHITE BG */
+/* STAMPED DISPLAY CURRENCY SWITCHER BAR */
 .currency-switcher-bar {
   display: flex;
   align-items: center;
@@ -837,7 +836,7 @@ textarea:focus-visible {
   border: 1px solid var(--border-rule-strong);
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 540px;
+  max-width: 560px;
   padding: 28px;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
 }
@@ -872,19 +871,28 @@ textarea:focus-visible {
   gap: 6px;
 }
 
-.cost-currency-row {
+.cost-input-container {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border-rule-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
-.currency-selector-input {
-  width: 110px;
-  flex-shrink: 0;
-  font-family: var(--font-display);
+.currency-prefix-badge {
+  padding: 10px 12px;
+  background: var(--border-rule);
+  color: var(--ink-primary);
   font-weight: 700;
+  font-size: 0.9rem;
+  border-right: 1px solid var(--border-rule-strong);
 }
 
-.cost-input-wrapper {
+.cost-number-input {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
   flex: 1;
 }
 
@@ -905,6 +913,23 @@ textarea:focus-visible {
   color: var(--ink-primary);
   font-size: 0.88rem;
   font-family: inherit;
+}
+
+.alert-banner {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.alert-error {
+  background: var(--accent-urgent-bg);
+  border: 1px solid var(--accent-urgent-border);
+  color: var(--accent-urgent);
 }
 
 .burn-preview-box {
