@@ -14,8 +14,8 @@ export const subscriptionApi = {
   // Fetch all subscriptions with optional search/filters and target displayCurrency
   getAll: async (filters = {}, displayCurrency = 'USD') => {
     const queryParams = new URLSearchParams();
-    if (filters.category) queryParams.append('category', filters.category);
-    if (filters.status) queryParams.append('status', filters.status);
+    if (filters.category && filters.category !== 'All') queryParams.append('category', filters.category);
+    if (filters.status && filters.status !== 'all') queryParams.append('status', filters.status);
     if (filters.search) queryParams.append('search', filters.search);
     if (displayCurrency) queryParams.append('displayCurrency', displayCurrency);
 

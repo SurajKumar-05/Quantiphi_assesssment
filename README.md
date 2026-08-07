@@ -4,14 +4,20 @@
 
 ---
 
-## 🚀 Key Features
+## 🚀 Pre-Populated Seed Subscriptions
 
-- **Multi-Currency System**: Each subscription stores its original billing currency (`USD $`, `EUR €`, `GBP £`, `INR ₹`).
-- **Global Display Currency Switcher**: Live stamped-ticker currency selector converts all monthly burn rates and annual metrics server-side into the chosen display currency (`USD`, `EUR`, `GBP`, `INR`) instantly.
-- **Original Amount Preservation**: Displays each row's original entered payment amount as a secondary label so users never lose track of original billing terms.
-- **Cost Uniformity Engine**: Normalizes weekly, monthly, quarterly, and annual terms into monthly burn rates ($\text{Monthly Normalization} \rightarrow \text{Server Currency Conversion}$).
-- **Tactile Financial Ledger Aesthetic**: Deep financial slate theme (`#0b0e14`), `IBM Plex Mono` display font, structured alternating ledger table rows, and tactile ON/OFF status switches.
-- **Urgent Renewal Alert Badge**: Reserved eye-catching Fiery Alert (`#ff5500`) badge for subscriptions renewing within 3 days.
+The backend in-memory database (`backend/config/db.js`) comes pre-populated with **6 real-world seed subscriptions** designed to demonstrate all UI and calculation features out-of-the-box:
+
+| Service Name | Original Billed Terms | Original Currency | Status | Key Feature Demonstrated |
+| :--- | :--- | :--- | :--- | :--- |
+| **Spotify Family Plan** | €16.99 / monthly | `EUR (€)` | **Active** | 🔴 **Renewing Soon Alert** (< 7 days) |
+| **Notion Plus & AI** | $10.00 / monthly | `USD ($)` | **Active** | 🔴 **Renewing Soon Alert** (< 7 days) |
+| **Netflix Premium 4K** | $22.99 / monthly | `USD ($)` | **Active** | Monthly term normalization |
+| **AWS Cloud Infrastructure** | $145.00 / monthly | `USD ($)` | ⏸️ **Paused** | **Tactile Paused Row** (Hatched texture & deferred rate) |
+| **Adobe Creative Cloud** | $599.88 / yearly | `USD ($)` | **Active** | Yearly term normalization ($\frac{\$599.88}{12} = \$49.99/\text{mo}$) |
+| **iCloud+ 200GB Storage** | ₹249.00 / monthly | `INR (₹)` | **Active** | INR currency conversion math |
+
+> **Note**: Seed subscriptions dynamically pass through `backend/services/costEngine.js` and `backend/services/dateEngine.js` on every API request. Nothing is hardcoded.
 
 ---
 
@@ -20,12 +26,12 @@
 ```text
 subscription-tracker/
 ├── backend/
-│   ├── config/db.js                 # In-memory store with multi-currency seed data
+│   ├── config/db.js                 # In-memory store pre-populated with 6 realistic seed records
 │   ├── models/Subscription.js       # Subscription model schema & currency validation
 │   ├── services/
-│   │   ├── costEngine.js            # Cost Uniformity Engine (monthly normalization)
+│   │   ├── costEngine.js            # Cost Uniformity Engine (monthly normalization math)
 │   │   ├── currencyEngine.js        # Server-side exchange rate conversion math
-│   │   └── dateEngine.js            # Renewal date calculations
+│   │   └── dateEngine.js            # Renewal date & countdown calculations
 │   ├── middleware/validate.js       # Payload validation
 │   ├── controllers/subscriptionController.js # Multi-currency API handlers
 │   ├── routes/subscriptionRoutes.js # Express router
@@ -39,16 +45,16 @@ subscription-tracker/
         ├── components/
         │   ├── EntryForm.jsx        # Modal form with per-subscription currency selector
         │   ├── MetricsRow.jsx       # Hero Monthly Burn Rate & global currency switcher
-        │   ├── SubscriptionTable.jsx# Structured ledger table
-        │   ├── SubscriptionRow.jsx  # Row with secondary original currency label
+        │   ├── SubscriptionTable.jsx# Structured financial ledger table
+        │   ├── SubscriptionRow.jsx  # Row display with tactile switch & secondary labels
         │   └── ToggleSwitch.jsx     # Tactile toggle switch
         ├── App.jsx                  # Main dashboard container
-        └── index.css                # Financial ledger stylesheet
+        └── index.css                # Pure white background high-contrast theme
 ```
 
 ---
 
-## 🧮 Multi-Currency Calculation Logic
+## 🧮 Multi-Currency & Cost Engine Math
 
 Following strict server-side architecture rules:
 1. **Monthly Normalization First**:

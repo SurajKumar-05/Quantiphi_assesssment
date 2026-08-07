@@ -33,7 +33,6 @@ const enrichSubscription = (sub, displayCurrency = "USD") => {
     normalizedMonthlyCost: convertedMonthlyCost,
     normalizedAnnualCost: convertedAnnualCost,
     convertedCost: convertedOriginalCost,
-    // Original entered amount details for secondary label display
     originalCostFormatted: `${getCurrencySymbol(originalCurrency)}${Number(sub.cost).toFixed(2)}`
   };
 };
@@ -43,11 +42,11 @@ export const getAllSubscriptions = (req, res) => {
     let subscriptions = db.getAll();
     const { category, status, search, displayCurrency = "USD" } = req.query;
 
-    if (category) {
+    if (category && category.toLowerCase() !== "all") {
       subscriptions = subscriptions.filter((s) => s.category.toLowerCase() === category.toLowerCase());
     }
 
-    if (status) {
+    if (status && status.toLowerCase() !== "all") {
       subscriptions = subscriptions.filter((s) => s.status.toLowerCase() === status.toLowerCase());
     }
 
