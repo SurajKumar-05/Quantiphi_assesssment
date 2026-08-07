@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Save, DollarSign, Calendar, Tag, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, Save, AlertCircle } from 'lucide-react';
 
 const CATEGORIES = [
   'Entertainment',
@@ -19,10 +19,18 @@ const FREQUENCIES = [
   { value: 'quarterly', label: 'Quarterly' }
 ];
 
+const CURRENCIES = [
+  { code: 'USD', symbol: '$', label: 'USD ($)' },
+  { code: 'EUR', symbol: '€', label: 'EUR (€)' },
+  { code: 'GBP', symbol: '£', label: 'GBP (£)' },
+  { code: 'INR', symbol: '₹', label: 'INR (₹)' }
+];
+
 export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => {
   const [formData, setFormData] = useState({
     name: '',
     cost: '',
+    currency: 'USD',
     frequency: 'monthly',
     category: 'Software',
     startDate: new Date().toISOString().split('T')[0],
@@ -39,6 +47,7 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
       setFormData({
         name: initialData.name || '',
         cost: initialData.cost || '',
+        currency: initialData.currency || 'USD',
         frequency: initialData.frequency || 'monthly',
         category: initialData.category || 'Software',
         startDate: initialData.startDate || new Date().toISOString().split('T')[0],
@@ -50,6 +59,7 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
       setFormData({
         name: '',
         cost: '',
+        currency: 'USD',
         frequency: 'monthly',
         category: 'Software',
         startDate: new Date().toISOString().split('T')[0],
@@ -61,7 +71,9 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
     setError(null);
   }, [initialData, isOpen]);
 
-  // Live calculation of preview monthly burn
+  const activeCurrencySymbol = CURRENCIES.find((c) => c.code === formData.currency)?.symbol || '$';
+
+  // Live calculation of preview monthly burn in entered currency
   const getMonthlyPreview = () => {
     const amount = parseFloat(formData.cost) || 0;
     switch (formData.frequency) {
@@ -104,18 +116,18 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content glass-card" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
             <h2 className="modal-title">
-              {initialData ? 'Edit Subscription' : 'Add New Subscription'}
+              {initialData ? 'Edit Subscription Entry' : 'Add Subscription Entry'}
             </h2>
             <p className="modal-subtitle">
-              {initialData ? 'Update recurring terms and billing schedule' : 'Register a new service to track burn rate'}
+              {initialData ? 'Update recurring terms and original billing currency' : 'Register a new service to audit burn rate'}
             </p>
           </div>
-          <button className="icon-btn" onClick={onClose} aria-label="Close modal">
-            <X size={20} />
+          <button className="ledger-action-btn" onClick={onClose} aria-label="Close modal">
+            <X size={16} />
           </button>
         </div>
 
@@ -127,8 +139,9 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
         )}
 
         <form onSubmit={handleSubmit} className="form-grid">
+          {/* Name */}
           <div className="form-group full-width">
-            <label className="form-label">Subscription Name</label>
+            <label className="form-label">Subscription / Service Name</label>
             <input
               type="text"
               className="form-input"
@@ -139,23 +152,35 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
             />
           </div>
 
+          {/* Cost & Currency Selector */}
           <div className="form-group">
-            <label className="form-label">Cost ($)</label>
-            <div className="input-with-icon">
-              <DollarSign size={16} className="input-icon" />
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                className="form-input icon-padded"
-                placeholder="0.00"
-                value={formData.cost}
-                onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
-                required
-              />
+            <label className="form-label">Cost & Currency</label>
+            <div className="cost-currency-row">
+              <select
+                className="form-select currency-selector-input"
+                value={formData.currency}
+                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.code} value={c.code}>{c.label}</option>
+                ))}
+              </select>
+              <div className="cost-input-wrapper">
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  className="form-input font-mono"
+                  placeholder="0.00"
+                  value={formData.cost}
+                  onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                  required
+                />
+              </div>
             </div>
           </div>
 
+          {/* Billing Cycle */}
           <div className="form-group">
             <label className="form-label">Billing Cycle</label>
             <select
@@ -169,6 +194,7 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
             </select>
           </div>
 
+          {/* Category */}
           <div className="form-group">
             <label className="form-label">Category</label>
             <select
@@ -182,48 +208,41 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
             </select>
           </div>
 
+          {/* Start Date */}
           <div className="form-group">
             <label className="form-label">Start Date</label>
             <input
               type="date"
-              className="form-input"
+              className="form-input font-mono"
               value={formData.startDate}
               onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
               required
             />
           </div>
 
-          {/* Live Burn Rate Calculator Badge */}
+          {/* Live Burn Preview Badge */}
           <div className="form-group full-width burn-preview-box">
-            <div className="burn-preview-info">
-              <span className="burn-preview-label">Normalized Monthly Burn Rate</span>
-              <span className="burn-preview-value">${getMonthlyPreview()} / mo</span>
+            <div>
+              <span className="burn-preview-label">Original Normalized Monthly Burn</span>
+              <div className="burn-preview-value font-mono">
+                {activeCurrencySymbol}{getMonthlyPreview()} / mo
+              </div>
             </div>
-            <span className="burn-preview-hint">
-              {formData.frequency !== 'monthly' && `Converted from $${formData.cost || 0} ${formData.frequency}`}
+            <span style={{ fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>
+              {formData.currency} entered
             </span>
           </div>
 
+          {/* Notes */}
           <div className="form-group full-width">
             <label className="form-label">Description / Notes (Optional)</label>
             <textarea
               className="form-textarea"
               rows="2"
-              placeholder="e.g. 4-Screen UHD tier, shared with family"
+              placeholder="e.g. 4-Screen UHD tier, shared with team"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
-          </div>
-
-          <div className="form-group full-width checkbox-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={formData.autoRenew}
-                onChange={(e) => setFormData({ ...formData, autoRenew: e.target.checked })}
-              />
-              <span>Enable Auto-Renew Notifications</span>
-            </label>
           </div>
 
           <div className="modal-actions full-width">
@@ -231,14 +250,8 @@ export const EntryForm = ({ isOpen, onClose, onSubmit, initialData = null }) => 
               Cancel
             </button>
             <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? (
-                'Saving...'
-              ) : (
-                <>
-                  <Save size={16} />
-                  <span>{initialData ? 'Update Subscription' : 'Add Subscription'}</span>
-                </>
-              )}
+              <Save size={16} />
+              <span>{submitting ? 'Saving...' : (initialData ? 'Update Subscription' : 'Add Subscription')}</span>
             </button>
           </div>
         </form>

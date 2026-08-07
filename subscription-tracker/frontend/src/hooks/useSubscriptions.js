@@ -8,19 +8,22 @@ export const useSubscriptions = () => {
   const [error, setError] = useState(null);
   const [togglingIds, setTogglingIds] = useState([]);
 
-  // Filters state
+  // Global display currency state
+  const [displayCurrency, setDisplayCurrency] = useState('USD');
+
+  // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  // Load subscriptions & metrics from backend
+  // Load subscriptions & metrics from backend using target displayCurrency
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const [subsData, metricsData] = await Promise.all([
-        subscriptionApi.getAll(),
-        subscriptionApi.getMetrics()
+        subscriptionApi.getAll({ search: searchQuery, category: selectedCategory, status: statusFilter }, displayCurrency),
+        subscriptionApi.getMetrics(displayCurrency)
       ]);
       setSubscriptions(subsData);
       setMetrics(metricsData);
@@ -30,19 +33,19 @@ export const useSubscriptions = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [displayCurrency, searchQuery, selectedCategory, statusFilter]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Toggle active/paused status with optimistic UI update for instant burn rate feedback
+  // Toggle active/paused status
   const toggleStatus = async (id) => {
     if (togglingIds.includes(id)) return;
 
     setTogglingIds((prev) => [...prev, id]);
 
-    // Optimistically update local state
+    // Optimistically update local status
     setSubscriptions((prevSubs) =>
       prevSubs.map((sub) => {
         if (sub.id === id) {
@@ -54,34 +57,32 @@ export const useSubscriptions = () => {
     );
 
     try {
-      await subscriptionApi.toggleStatus(id);
-      // Refresh backend calculated metrics & synced data
+      await subscriptionApi.toggleStatus(id, displayCurrency);
       const [updatedSubs, updatedMetrics] = await Promise.all([
-        subscriptionApi.getAll(),
-        subscriptionApi.getMetrics()
+        subscriptionApi.getAll({}, displayCurrency),
+        subscriptionApi.getMetrics(displayCurrency)
       ]);
       setSubscriptions(updatedSubs);
       setMetrics(updatedMetrics);
     } catch (err) {
       console.error('Failed to toggle status:', err);
       setError('Failed to update subscription status. Reverting change.');
-      // Revert on failure
       fetchData();
     } finally {
       setTogglingIds((prev) => prev.filter((item) => item !== id));
     }
   };
 
-  // Create new subscription
+  // Create subscription
   const addSubscription = async (formData) => {
-    const created = await subscriptionApi.create(formData);
+    const created = await subscriptionApi.create(formData, displayCurrency);
     await fetchData();
     return created;
   };
 
   // Update subscription
   const updateSubscription = async (id, formData) => {
-    const updated = await subscriptionApi.update(id, formData);
+    const updated = await subscriptionApi.update(id, formData, displayCurrency);
     await fetchData();
     return updated;
   };
@@ -98,6 +99,8 @@ export const useSubscriptions = () => {
     loading,
     error,
     togglingIds,
+    displayCurrency,
+    setDisplayCurrency,
     searchQuery,
     setSearchQuery,
     selectedCategory,

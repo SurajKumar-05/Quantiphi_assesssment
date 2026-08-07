@@ -1,6 +1,7 @@
 // Subscription Model Shape Reference and Data Validation Schema
 
 export const VALID_FREQUENCIES = ["weekly", "monthly", "quarterly", "yearly"];
+export const VALID_CURRENCIES = ["USD", "EUR", "GBP", "INR"];
 export const VALID_CATEGORIES = [
   "Entertainment",
   "Software",
@@ -18,6 +19,9 @@ export class SubscriptionModel {
     return {
       name: data.name?.trim() || "Untitled Subscription",
       cost: parseFloat(data.cost) || 0,
+      currency: VALID_CURRENCIES.includes(data.currency?.toUpperCase())
+        ? data.currency.toUpperCase()
+        : "USD",
       frequency: VALID_FREQUENCIES.includes(data.frequency) ? data.frequency : "monthly",
       category: VALID_CATEGORIES.includes(data.category) ? data.category : "Other",
       startDate: data.startDate || new Date().toISOString().split("T")[0],
@@ -36,6 +40,10 @@ export class SubscriptionModel {
 
     if (data.cost === undefined || isNaN(data.cost) || Number(data.cost) < 0) {
       errors.push("Cost must be a positive number or zero");
+    }
+
+    if (data.currency && !VALID_CURRENCIES.includes(data.currency.toUpperCase())) {
+      errors.push(`Currency must be one of: ${VALID_CURRENCIES.join(", ")}`);
     }
 
     if (data.frequency && !VALID_FREQUENCIES.includes(data.frequency)) {

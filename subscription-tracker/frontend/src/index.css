@@ -1,4 +1,4 @@
-/* SubPulse - Financial Ledger & Receipt Theme System */
+/* The Subscription Tracker - Financial Ledger & Receipt Theme System */
 
 :root {
   /* Typography */
@@ -53,7 +53,6 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  /* Ledger Paper Sub-Grid Pattern background */
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
@@ -179,7 +178,7 @@ textarea:focus-visible {
   margin-bottom: 28px;
 }
 
-/* Hero Ledger Card - The Main Burn Rate Hero */
+/* Hero Ledger Card */
 .ledger-hero-card {
   background: var(--bg-ledger);
   border: 2px solid var(--border-rule-strong);
@@ -194,8 +193,10 @@ textarea:focus-visible {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
   margin-bottom: 16px;
-  padding-bottom: 12px;
+  padding-bottom: 14px;
   border-bottom: 1px dashed var(--border-rule-strong);
 }
 
@@ -210,10 +211,54 @@ textarea:focus-visible {
   color: var(--ink-secondary);
 }
 
-.hero-active-count {
-  font-family: var(--font-display);
-  font-size: 0.8rem;
+/* STAMPED DISPLAY CURRENCY SWITCHER BAR */
+.currency-switcher-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-canvas);
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-rule-strong);
+}
+
+.switcher-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.04em;
+}
+
+.currency-pills-group {
+  display: flex;
+  gap: 4px;
+}
+
+.currency-pill-btn {
+  background: transparent;
+  border: 1px solid transparent;
   color: var(--ink-secondary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.currency-pill-btn:hover {
+  color: var(--ink-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.currency-pill-btn.active {
+  background: var(--accent-hero);
+  color: #ffffff;
+  border-color: var(--accent-hero-hover);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
 }
 
 .hero-main-display {
@@ -241,7 +286,6 @@ textarea:focus-visible {
   line-height: 1;
   letter-spacing: -0.04em;
   color: #ffffff;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .hero-period {
@@ -306,7 +350,7 @@ textarea:focus-visible {
   align-items: center;
 }
 
-/* BOLD EYE-CATCHING "RENEWING SOON" BADGE - EXCLUSIVE ACCENT COLOR */
+/* BOLD EYE-CATCHING "RENEWING SOON" BADGE */
 .renewing-soon-badge {
   background: var(--accent-urgent-bg);
   color: var(--accent-urgent);
@@ -623,6 +667,13 @@ textarea:focus-visible {
   color: var(--ink-muted);
 }
 
+.original-secondary-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
 .monthly-rate-pill {
   display: inline-block;
   padding: 4px 10px;
@@ -812,6 +863,22 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.cost-currency-row {
+  display: flex;
+  gap: 8px;
+}
+
+.currency-selector-input {
+  width: 110px;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.cost-input-wrapper {
+  flex: 1;
 }
 
 .form-label {

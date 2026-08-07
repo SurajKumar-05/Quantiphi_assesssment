@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, Plus, RefreshCw, Layers, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Activity, Plus, RefreshCw, AlertCircle } from 'lucide-react';
 import { useSubscriptions } from './hooks/useSubscriptions';
 import { MetricsRow } from './components/MetricsRow';
 import { SubscriptionTable } from './components/SubscriptionTable';
@@ -12,6 +12,8 @@ export default function App() {
     loading,
     error,
     togglingIds,
+    displayCurrency,
+    setDisplayCurrency,
     searchQuery,
     setSearchQuery,
     selectedCategory,
@@ -66,14 +68,14 @@ export default function App() {
   return (
     <div className="app-container">
       {/* Top Navbar */}
-      <nav className="navbar glass-card">
+      <nav className="navbar">
         <div className="nav-brand">
           <div className="brand-icon">
-            <Activity size={24} />
+            <Activity size={22} />
           </div>
           <div>
-            <h1 className="brand-title">SubPulse</h1>
-            <p className="brand-subtitle">Cost Uniformity & Subscription Burn Tracker</p>
+            <h1 className="brand-title">The Subscription Tracker</h1>
+            <p className="brand-subtitle">Ledger Burn Rate & Multi-Currency Audit Dashboard</p>
           </div>
         </div>
 
@@ -83,8 +85,8 @@ export default function App() {
             <span>Sync</span>
           </button>
           <button className="btn btn-primary" onClick={handleOpenAdd}>
-            <Plus size={18} />
-            <span>New Subscription</span>
+            <Plus size={16} />
+            <span>New Entry</span>
           </button>
         </div>
       </nav>
@@ -97,8 +99,12 @@ export default function App() {
         </div>
       )}
 
-      {/* Metrics Row Section */}
-      <MetricsRow metrics={metrics} />
+      {/* Metrics Row & Global Currency Switcher */}
+      <MetricsRow
+        metrics={metrics}
+        displayCurrency={displayCurrency}
+        onCurrencyChange={setDisplayCurrency}
+      />
 
       {/* Main Subscriptions Table */}
       <SubscriptionTable
@@ -127,19 +133,19 @@ export default function App() {
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
         <div className="modal-overlay" onClick={() => setDeleteConfirmId(null)}>
-          <div className="modal-content glass-card" style={{ maxWidth: '420px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" style={{ maxWidth: '420px' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3 className="modal-title" style={{ color: 'var(--rose-glow)' }}>Confirm Deletion</h3>
+              <h3 className="modal-title" style={{ color: 'var(--accent-urgent)' }}>Confirm Deletion</h3>
             </div>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '20px' }}>
-              Are you sure you want to delete <strong>{deleteConfirmName}</strong>? This action cannot be undone.
+            <p style={{ fontSize: '0.88rem', color: 'var(--ink-secondary)', marginBottom: '20px' }}>
+              Are you sure you want to delete <strong>{deleteConfirmName}</strong> from the ledger? This action cannot be undone.
             </p>
             <div className="modal-actions">
               <button className="btn btn-secondary" onClick={() => setDeleteConfirmId(null)}>
                 Cancel
               </button>
-              <button className="btn btn-primary" style={{ background: 'var(--rose-glow)' }} onClick={handleConfirmDelete}>
-                Delete Subscription
+              <button className="btn btn-primary" style={{ background: 'var(--accent-urgent)', borderColor: 'var(--accent-urgent)' }} onClick={handleConfirmDelete}>
+                Delete Entry
               </button>
             </div>
           </div>

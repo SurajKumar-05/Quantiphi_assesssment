@@ -11,27 +11,28 @@ const handleResponse = async (response) => {
 };
 
 export const subscriptionApi = {
-  // Fetch all subscriptions with optional search/filters
-  getAll: async (filters = {}) => {
+  // Fetch all subscriptions with optional search/filters and target displayCurrency
+  getAll: async (filters = {}, displayCurrency = 'USD') => {
     const queryParams = new URLSearchParams();
     if (filters.category) queryParams.append('category', filters.category);
     if (filters.status) queryParams.append('status', filters.status);
     if (filters.search) queryParams.append('search', filters.search);
+    if (displayCurrency) queryParams.append('displayCurrency', displayCurrency);
 
     const url = queryParams.toString() ? `${BASE_URL}?${queryParams}` : BASE_URL;
     const res = await fetch(url);
     return handleResponse(res);
   },
 
-  // Fetch aggregated dashboard metrics
-  getMetrics: async () => {
-    const res = await fetch(`${BASE_URL}/metrics`);
+  // Fetch aggregated dashboard metrics converted to displayCurrency
+  getMetrics: async (displayCurrency = 'USD') => {
+    const res = await fetch(`${BASE_URL}/metrics?displayCurrency=${displayCurrency}`);
     return handleResponse(res);
   },
 
   // Create a new subscription
-  create: async (subscriptionData) => {
-    const res = await fetch(BASE_URL, {
+  create: async (subscriptionData, displayCurrency = 'USD') => {
+    const res = await fetch(`${BASE_URL}?displayCurrency=${displayCurrency}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(subscriptionData)
@@ -40,8 +41,8 @@ export const subscriptionApi = {
   },
 
   // Update existing subscription
-  update: async (id, subscriptionData) => {
-    const res = await fetch(`${BASE_URL}/${id}`, {
+  update: async (id, subscriptionData, displayCurrency = 'USD') => {
+    const res = await fetch(`${BASE_URL}/${id}?displayCurrency=${displayCurrency}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(subscriptionData)
@@ -50,8 +51,8 @@ export const subscriptionApi = {
   },
 
   // Toggle active / paused status instantly
-  toggleStatus: async (id) => {
-    const res = await fetch(`${BASE_URL}/${id}/toggle`, {
+  toggleStatus: async (id, displayCurrency = 'USD') => {
+    const res = await fetch(`${BASE_URL}/${id}/toggle?displayCurrency=${displayCurrency}`, {
       method: 'PATCH'
     });
     return handleResponse(res);
