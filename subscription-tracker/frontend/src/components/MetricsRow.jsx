@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Calendar, Layers, PiggyBank, ArrowUpRight, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Flame, AlertCircle, ArrowUpRight, ShieldAlert, Receipt, DollarSign } from 'lucide-react';
 
 export const MetricsRow = ({ metrics }) => {
   if (!metrics) return null;
@@ -14,104 +14,82 @@ export const MetricsRow = ({ metrics }) => {
     upcomingRenewals = []
   } = metrics;
 
-  const nextRenewal = upcomingRenewals[0];
+  // Find urgent renewal (<= 3 days) or earliest upcoming
+  const urgentRenewal = upcomingRenewals.find((s) => s.daysUntilRenewal <= 3) || upcomingRenewals[0];
 
   return (
-    <div className="metrics-grid">
-      {/* Monthly Burn Rate Card */}
-      <div className="metric-card metric-burn">
-        <div className="metric-card-header">
-          <div className="metric-icon-box icon-flame">
-            <Flame size={22} />
+    <div className="hero-ledger-container">
+      {/* Hero Banner: Total Monthly Burn Rate */}
+      <div className="ledger-hero-card">
+        <div className="hero-top-bar">
+          <div className="hero-tag">
+            <Receipt size={16} />
+            <span>PRIMARY RECURRING DRAIN</span>
           </div>
-          <span className="metric-badge badge-burn">Real-time Burn</span>
+          <span className="hero-active-count">
+            {activeCount} of {totalSubscriptions} Active Subscriptions
+          </span>
         </div>
-        <div className="metric-body">
-          <span className="metric-label">Monthly Burn Rate</span>
-          <div className="metric-value-row">
-            <span className="metric-currency">$</span>
-            <span className="metric-value">{totalMonthlyBurnRate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-            <span className="metric-unit">/ mo</span>
+
+        <div className="hero-main-display">
+          <div className="hero-number-wrapper">
+            <span className="hero-currency">$</span>
+            <span className="hero-amount font-mono">
+              {totalMonthlyBurnRate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+            <span className="hero-period">/ MONTH</span>
           </div>
-          <div className="metric-footer">
-            <TrendingUp size={14} className="text-emerald" />
-            <span>Normalized across all active billing cycles</span>
-          </div>
+          <p className="hero-caption">
+            Normalized monthly burn rate automatically calculated across weekly, monthly, quarterly, and annual billing terms.
+          </p>
         </div>
+
+        <div className="hero-perforated-edge" />
       </div>
 
-      {/* Annual Spend Card */}
-      <div className="metric-card metric-annual">
-        <div className="metric-card-header">
-          <div className="metric-icon-box icon-annual">
-            <Calendar size={22} />
+      {/* Supporting Ledger Metrics Sidebar / Row */}
+      <div className="ledger-secondary-grid">
+        {/* 1. Projected 12-Month Spend */}
+        <div className="secondary-ledger-card">
+          <div className="card-label">12-Month Projected Spend</div>
+          <div className="card-value font-mono">
+            ${totalAnnualSpend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="metric-badge badge-blue">12-Mo Horizon</span>
+          <div className="card-subtext">Cumulative annual commitment</div>
         </div>
-        <div className="metric-body">
-          <span className="metric-label">Projected Annual Spend</span>
-          <div className="metric-value-row">
-            <span className="metric-currency">$</span>
-            <span className="metric-value">{totalAnnualSpend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-            <span className="metric-unit">/ yr</span>
-          </div>
-          <div className="metric-footer">
-            <span>Estimated recurring commitments</span>
-          </div>
-        </div>
-      </div>
 
-      {/* Active Subscriptions & Paused Savings */}
-      <div className="metric-card metric-count">
-        <div className="metric-card-header">
-          <div className="metric-icon-box icon-layers">
-            <Layers size={22} />
+        {/* 2. Paused Savings Potential */}
+        <div className="secondary-ledger-card">
+          <div className="card-label">Paused Subscriptions</div>
+          <div className="card-value font-mono">
+            ${pausedMonthlyBurnRate.toFixed(2)} <span className="card-unit">/ mo</span>
           </div>
-          <span className="metric-badge badge-purple">{activeCount} Active</span>
+          <div className="card-subtext">{pausedCount} paused services deferred</div>
         </div>
-        <div className="metric-body">
-          <span className="metric-label">Tracked Subscriptions</span>
-          <div className="metric-value-row">
-            <span className="metric-value">{totalSubscriptions}</span>
-            <span className="metric-unit">total ({pausedCount} paused)</span>
-          </div>
-          <div className="metric-footer">
-            <PiggyBank size={14} className="text-purple" />
-            <span>Savings if paused remain off: <strong>${pausedMonthlyBurnRate.toFixed(2)}/mo</strong></span>
-          </div>
-        </div>
-      </div>
 
-      {/* Next Upcoming Renewal */}
-      <div className="metric-card metric-renewal">
-        <div className="metric-card-header">
-          <div className="metric-icon-box icon-alert">
-            <AlertTriangle size={22} />
+        {/* 3. Urgent "Renewing Soon" Alert Stamp Card */}
+        <div className={`secondary-ledger-card renewal-alert-card ${urgentRenewal?.isUrgent ? 'urgent-glow' : ''}`}>
+          <div className="card-header-row">
+            <span className="card-label">Next Renewal Alert</span>
+            {urgentRenewal?.isUrgent ? (
+              <span className="renewing-soon-badge">
+                <span className="pulse-dot" />
+                RENEWING SOON
+              </span>
+            ) : (
+              <span className="standard-renewal-badge">UPCOMING</span>
+            )}
           </div>
-          <span className="metric-badge badge-amber">Next Renewal</span>
-        </div>
-        <div className="metric-body">
-          <span className="metric-label">Upcoming Payment</span>
-          {nextRenewal ? (
-            <>
-              <div className="metric-value-row text-amber">
-                <span className="metric-value-small">{nextRenewal.name}</span>
+
+          {urgentRenewal ? (
+            <div className="renewal-info-body">
+              <div className="renewal-service-name">{urgentRenewal.name}</div>
+              <div className="renewal-meta font-mono">
+                ${urgentRenewal.cost} ({urgentRenewal.frequency}) &bull; {urgentRenewal.daysUntilRenewal === 0 ? 'DUE TODAY' : `In ${urgentRenewal.daysUntilRenewal} Days`}
               </div>
-              <div className="metric-footer">
-                <span>
-                  <strong>${nextRenewal.cost}</strong> on {nextRenewal.nextBillingDate} ({nextRenewal.daysUntilRenewal}d left)
-                </span>
-              </div>
-            </>
+            </div>
           ) : (
-            <>
-              <div className="metric-value-row">
-                <span className="metric-value-small text-muted">None pending</span>
-              </div>
-              <div className="metric-footer">
-                <span>No active renewals in queue</span>
-              </div>
-            </>
+            <div className="renewal-info-body text-muted font-mono">No active renewals pending</div>
           )}
         </div>
       </div>

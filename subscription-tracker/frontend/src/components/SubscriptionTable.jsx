@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, Plus, AlertCircle, ArrowUpDown } from 'lucide-react';
+import { Search, Filter, Plus, FileText, ArrowUpDown } from 'lucide-react';
 import { SubscriptionRow } from './SubscriptionRow';
 
 const CATEGORIES = [
@@ -36,7 +36,7 @@ export const SubscriptionTable = ({
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection('desc');
     }
   };
 
@@ -66,61 +66,58 @@ export const SubscriptionTable = ({
   });
 
   return (
-    <div className="table-container glass-card">
-      {/* Controls Header: Search, Category Pills, Status Tabs */}
-      <div className="table-toolbar">
-        <div className="toolbar-left">
-          {/* Search Box */}
-          <div className="search-input-wrapper">
-            <Search size={18} className="search-icon" />
+    <div className="ledger-table-sheet">
+      {/* Table Toolbar Header */}
+      <div className="ledger-toolbar">
+        <div className="toolbar-left-group">
+          {/* Search Input */}
+          <div className="search-ledger-input font-mono">
+            <Search size={16} className="search-icon" />
             <input
               type="text"
-              className="search-input"
-              placeholder="Search subscriptions by name or note..."
+              placeholder="Search ledger entries..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
           {/* Status Filter Tabs */}
-          <div className="status-tabs">
+          <div className="ledger-status-pills">
             <button
-              className={`status-tab ${statusFilter === 'all' ? 'active' : ''}`}
+              className={`ledger-tab ${statusFilter === 'all' ? 'active' : ''}`}
               onClick={() => setStatusFilter('all')}
             >
-              All ({subscriptions.length})
+              ALL ({subscriptions.length})
             </button>
             <button
-              className={`status-tab ${statusFilter === 'active' ? 'active' : ''}`}
+              className={`ledger-tab ${statusFilter === 'active' ? 'active' : ''}`}
               onClick={() => setStatusFilter('active')}
             >
-              Active ({subscriptions.filter(s => s.status === 'active').length})
+              ACTIVE ({subscriptions.filter(s => s.status === 'active').length})
             </button>
             <button
-              className={`status-tab ${statusFilter === 'paused' ? 'active' : ''}`}
+              className={`ledger-tab ${statusFilter === 'paused' ? 'active' : ''}`}
               onClick={() => setStatusFilter('paused')}
             >
-              Paused ({subscriptions.filter(s => s.status === 'paused').length})
+              PAUSED ({subscriptions.filter(s => s.status === 'paused').length})
             </button>
           </div>
         </div>
 
-        <div className="toolbar-right">
-          <button className="btn btn-primary" onClick={onAddNew}>
-            <Plus size={18} />
-            <span>Add Subscription</span>
-          </button>
-        </div>
+        <button className="btn btn-primary" onClick={onAddNew}>
+          <Plus size={16} />
+          <span>+ Add Entry</span>
+        </button>
       </div>
 
-      {/* Category Pills Bar */}
-      <div className="category-pills-bar">
-        <span className="pills-label"><Filter size={14} /> Filter:</span>
-        <div className="pills-scroll">
+      {/* Category Filter Chips */}
+      <div className="ledger-category-chips">
+        <span className="chips-label font-mono"><Filter size={13} /> CATEGORY:</span>
+        <div className="chips-row">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
-              className={`category-pill ${selectedCategory === cat ? 'active' : ''}`}
+              className={`chip-btn ${selectedCategory === cat ? 'chip-active' : ''}`}
               onClick={() => setSelectedCategory(cat)}
             >
               {cat}
@@ -129,50 +126,37 @@ export const SubscriptionTable = ({
         </div>
       </div>
 
-      {/* Subscription Table */}
-      <div className="table-responsive">
-        <table className="subscription-table">
+      {/* Structured Ledger Table */}
+      <div className="ledger-scroll-view">
+        <table className="ledger-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort('name')} className="sortable-th">
-                <div className="th-content">
-                  <span>Subscription</span>
-                  <ArrowUpDown size={14} />
-                </div>
+              <th onClick={() => handleSort('name')} className="sortable-head">
+                <span>SERVICE / SUBSCRIPTION</span>
+                <ArrowUpDown size={12} />
               </th>
-              <th onClick={() => handleSort('category')} className="sortable-th">
-                <div className="th-content">
-                  <span>Category</span>
-                  <ArrowUpDown size={14} />
-                </div>
+              <th onClick={() => handleSort('cost')} className="sortable-head">
+                <span>TERMS</span>
+                <ArrowUpDown size={12} />
               </th>
-              <th onClick={() => handleSort('cost')} className="sortable-th">
-                <div className="th-content">
-                  <span>Billed Amount</span>
-                  <ArrowUpDown size={14} />
-                </div>
+              <th onClick={() => handleSort('normalizedMonthlyCost')} className="sortable-head">
+                <span>MONTHLY BURN</span>
+                <ArrowUpDown size={12} />
               </th>
-              <th onClick={() => handleSort('normalizedMonthlyCost')} className="sortable-th">
-                <div className="th-content">
-                  <span>Monthly Burn Rate</span>
-                  <ArrowUpDown size={14} />
-                </div>
+              <th onClick={() => handleSort('nextBillingDate')} className="sortable-head">
+                <span>NEXT RENEWAL</span>
+                <ArrowUpDown size={12} />
               </th>
-              <th onClick={() => handleSort('nextBillingDate')} className="sortable-th">
-                <div className="th-content">
-                  <span>Next Renewal</span>
-                  <ArrowUpDown size={14} />
-                </div>
-              </th>
-              <th>Status</th>
-              <th className="text-right">Actions</th>
+              <th>STATUS</th>
+              <th className="text-right">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             {sorted.length > 0 ? (
-              sorted.map((sub) => (
+              sorted.map((sub, index) => (
                 <SubscriptionRow
                   key={sub.id}
+                  rowIndex={index}
                   subscription={sub}
                   onToggle={onToggle}
                   onEdit={onEdit}
@@ -182,23 +166,10 @@ export const SubscriptionTable = ({
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="empty-table-cell">
-                  <div className="empty-state">
-                    <AlertCircle size={36} className="text-muted" />
-                    <h3>No Subscriptions Found</h3>
-                    <p>Try adjusting your search criteria or category filter.</p>
-                    {(searchQuery || selectedCategory !== 'All' || statusFilter !== 'all') && (
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => {
-                          setSearchQuery('');
-                          setSelectedCategory('All');
-                          setStatusFilter('all');
-                        }}
-                      >
-                        Reset All Filters
-                      </button>
-                    )}
+                <td colSpan="6" className="empty-ledger-row">
+                  <div className="empty-ledger-notice">
+                    <FileText size={32} />
+                    <p>No matching ledger records found.</p>
                   </div>
                 </td>
               </tr>
